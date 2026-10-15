@@ -4,6 +4,8 @@ import Navbar from "../components/Navbar";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../lib/config";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+
 
 
 const Home = () => {
@@ -11,6 +13,7 @@ const Home = () => {
   const [selectItem, setSelectItem] = useState("");
   const [notes, setNotes] = useState([]);
   const [filteredNotes, setFilteredNotes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -19,6 +22,7 @@ const Home = () => {
         const fetchNotes = response.data.data;
         setNotes(fetchNotes);
         setFilteredNotes(fetchNotes);
+        setLoading(false);
       } catch (error) {
         console.log(error.message);
       }
@@ -50,8 +54,8 @@ const Home = () => {
   return (
     <>
       <Navbar setSearchItem={setSearchItem} setSelectItem={setSelectItem} />
-      <div className="relative h-[calc(100vh-173px)]">
-        {filteredNotes.map((note, index) => (
+      <div className={`relative ${loading ? 'flex flex-col justify-center items-center': ''} h-[calc(100vh-173px)]`}>
+        {loading? <AiOutlineLoading3Quarters className="animate-spin text-center text-4xl"/> : filteredNotes.map((note, index) => (
           <Link key={index} to={`/note?id=${note._id}`}><Item title={note.title} message={note.message} createdAt={note.createdAt} /></Link>
         ))}
 

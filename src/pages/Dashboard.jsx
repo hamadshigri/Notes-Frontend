@@ -8,7 +8,7 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 
 
-const Home = () => {
+const Dashboard = () => {
   const [searchItem, setSearchItem] = useState("");
   const [selectItem, setSelectItem] = useState("");
   const [notes, setNotes] = useState([]);
@@ -68,4 +68,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default Dashboard

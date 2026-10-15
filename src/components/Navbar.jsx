@@ -7,7 +7,7 @@ function Navbar({setSearchItem, setSelectItem}) {
     <>
       <div className="bg-[#F7F7F7] flex justify-center items-center gap-10 p-4">
 
-        {pathname === '/' ? (
+        {pathname === '/dashboard' ? (
           <div className='flex gap-4'>
             <input type="text" onChange={(e) => setSearchItem(e.target.value)} placeholder="Filter by" className="bg-white p-2" />
             <select name="filter" id="filter" onChange={(e) => setSelectItem(e.target.value)} className="bg-white p-2">
@@ -20,7 +20,7 @@ function Navbar({setSearchItem, setSelectItem}) {
         ) : (
           <div className="flex justify-start items-center w-full max-w-[55%]">
             <div className="gap-10 p-4">
-              <Link to="/"><h2 className="text-lg text-center">Home</h2></Link>
+              <Link to="/dashboard"><h2 className="text-lg text-center">Home</h2></Link>
             </div>
           </div>
         )}

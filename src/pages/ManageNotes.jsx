@@ -11,6 +11,7 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const ManageNotes = () => {
   const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const titleRef = useRef(null);
   const messageRef = useRef(null);
   const navigate = useNavigate();
@@ -36,14 +37,20 @@ const ManageNotes = () => {
   }
 
   useEffect(() => {
-      if(!id) {
-      setLoading(false);
-    }
+    if (!id) return;
     fetchNotes();
   }, [id]);
 
+    useEffect(() => {
+    if (!id) {
+      setLoading(false);
+    };
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(isSubmitting) return;
+    setIsSubmitting(true);
     const title = titleRef.current.value;
     const message = messageRef.current.value;
     if (!title || !message) {
@@ -59,16 +66,20 @@ const ManageNotes = () => {
       console.log("Note Added!", response.data);
       titleRef.current.value = "";
       messageRef.current.value = "";
-      navigate("/");
+      navigate("/dashboard");
       addNotify();
     } catch (error) {
       console.log(error.message);
+    } finally {
+      setIsSubmitting(false);
     }
 
   }
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+    if(isSubmitting) return;
+    setIsSubmitting(true);
     const title = titleRef.current.value;
     const message = messageRef.current.value;
 
@@ -77,12 +88,14 @@ const ManageNotes = () => {
       return;
     }
     try {
-        let data = { title, message };
-        const response = await axios.put(`${BASE_URL}/note?id=${id}`, data);
-        navigate("/");
-        updateNotify();
-      } catch(error) {
+      let data = { title, message };
+      const response = await axios.put(`${BASE_URL}/note?id=${id}`, data);
+      navigate("/dashboard");
+      updateNotify();
+    } catch (error) {
       console.log(error.message);
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -102,7 +115,7 @@ const ManageNotes = () => {
         confirmButtonColor: '#437993'
       });
       deleteNotify();
-      navigate("/");
+      navigate("/dashboard");
     } else {
       console.log("User canceled the deletion.");
     }
@@ -113,18 +126,18 @@ const ManageNotes = () => {
     <>
       <Navbar />
       <div className="flex justify-center">
-           <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-[850px] pt-4">
-            {loading && <p className="text-center flex justify-center"><AiOutlineLoading3Quarters className="animate-spin text-4xl"/></p>}
-          <input type="text" ref={titleRef} placeholder="Type Your Notes Title" maxLength='50' className="bg-[#F7F7F7] p-4" required disabled={loading}  />
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-[850px] pt-4">
+          {loading && <p className="text-center flex justify-center"><AiOutlineLoading3Quarters className="animate-spin text-4xl" /></p>}
+          <input type="text" ref={titleRef} placeholder="Type Your Notes Title" maxLength='50' className="bg-[#F7F7F7] p-4" required disabled={loading} />
           <textarea cols="4" rows="4" ref={messageRef} className="bg-[#F7F7F7] p-4" maxLength="200" placeholder="Type Your Notes Body" required disabled={loading}></textarea>
-          {!id ? <button type="submit" className='bg-[#437993] p-4 text-white font-bold rounded w-[120px] hover:opacity-[0.9] cursor-pointer'>Add Note</button> :
+          {!id ? <button type="submit" className='bg-[#437993] p-4 text-white font-bold rounded w-[120px] hover:opacity-[0.9] cursor-pointer' disabled={isSubmitting}>{isSubmitting ? 'Adding' : 'Add Notes'}</button> :
             (<div className="flex justify-between">
-              <button type="submit" onClick={handleUpdate} className='bg-[#437993] p-4 text-white font-bold rounded w-[120px] hover:opacity-[0.9] cursor-pointer' disabled={loading}>Update</button>
-              <button type="submit" onClick={handleDelete} className='bg-[#437993] p-4 text-white font-bold rounded w-[120px] hover:opacity-[0.9] cursor-pointer' disabled={loading}>Delete</button>
+              <button type="button" onClick={handleUpdate} className='bg-[#437993] p-4 text-white font-bold rounded w-[120px] hover:opacity-[0.9] cursor-pointer' disabled={loading && isSubmitting}>{isSubmitting? 'Updating': 'Update'}</button>
+              <button type="button" onClick={handleDelete} className='bg-[#437993] p-4 text-white font-bold rounded w-[120px] hover:opacity-[0.9] cursor-pointer' disabled={loading && isSubmitting}>Delete</button>
             </div>)
           }
         </form>
-        
+
 
       </div>
     </>

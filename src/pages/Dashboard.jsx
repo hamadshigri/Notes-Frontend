@@ -1,5 +1,5 @@
 import Item from "../components/Item"
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from "../components/Navbar";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -9,16 +9,27 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 
 const Dashboard = () => {
+  const navigate = useNavigate()
   const [searchItem, setSearchItem] = useState("");
   const [selectItem, setSelectItem] = useState("");
   const [notes, setNotes] = useState([]);
   const [filteredNotes, setFilteredNotes] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  
+  const token = localStorage.getItem("token");
+  if(!token) {
+    navigate("/login");
+  }
 
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/notes`);
+        const response = await axios.get(`${BASE_URL}/notes`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        }});
         const fetchNotes = response.data.data;
         setNotes(fetchNotes);
         setFilteredNotes(fetchNotes);

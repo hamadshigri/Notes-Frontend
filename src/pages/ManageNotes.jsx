@@ -18,15 +18,23 @@ const ManageNotes = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
 
-
   const addNotify = () => toast("Notes Added!");
   const updateNotify = () => toast("Notes Updated!");
   const deleteNotify = () => toast("Notes Deleted!");
 
+  const token = localStorage.getItem("token");
+  if(!token) {
+    navigate("/login");
+  }
 
   const fetchNotes = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/note?id=${id}`);
+      const response = await axios.get(`${BASE_URL}/note?id=${id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        }
+      });
       const data = response.data;
       titleRef.current.value = data.title || "";
       messageRef.current.value = data.message || "";
@@ -62,7 +70,12 @@ const ManageNotes = () => {
       message,
     }
     try {
-      const response = await axios.post(`${BASE_URL}/note`, noteData);
+      const response = await axios.post(`${BASE_URL}/note`, noteData, {
+         headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        }
+      });
       console.log("Note Added!", response.data);
       titleRef.current.value = "";
       messageRef.current.value = "";
@@ -89,7 +102,12 @@ const ManageNotes = () => {
     }
     try {
       let data = { title, message };
-      const response = await axios.put(`${BASE_URL}/note?id=${id}`, data);
+      const response = await axios.put(`${BASE_URL}/note?id=${id}`, data, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        }
+      });
       navigate("/dashboard");
       updateNotify();
     } catch (error) {
@@ -106,7 +124,12 @@ const ManageNotes = () => {
       "This action cannot be undone."
     );
     if (result.isConfirmed) {
-      const response = await axios.delete(`${BASE_URL}/note?id=${id}`);
+      const response = await axios.delete(`${BASE_URL}/note?id=${id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        }
+      });
       console.log(response);
       Swal.fire({
         title: "Deleted!",

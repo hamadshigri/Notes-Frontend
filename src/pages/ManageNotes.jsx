@@ -59,10 +59,11 @@ const ManageNotes = () => {
     e.preventDefault();
     if(isSubmitting) return;
     setIsSubmitting(true);
-    const title = titleRef.current.value;
-    const message = messageRef.current.value;
-    if (!title || !message) {
+    const title = titleRef.current.value.trim();
+    const message = messageRef.current.value.trim();
+    if (title.length === 0 || message.length === 0) {
       alert("please add missing data");
+      setIsSubmitting(false);
       return;
     }
     const noteData = {
@@ -96,12 +97,13 @@ const ManageNotes = () => {
     const title = titleRef.current.value;
     const message = messageRef.current.value;
 
-    if (!title || !message) {
+    if (title.length === 0 || message.length === 0) {
       alert("please add missing data");
+      setIsSubmitting(false);
       return;
     }
     try {
-      let data = { title, message };
+      let data = { title: title.trim() , message: message.trim() };
       const response = await axios.put(`${BASE_URL}/note?id=${id}`, data, {
         headers: {
           'Authorization': `Bearer ${token}`,

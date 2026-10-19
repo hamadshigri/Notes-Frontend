@@ -2,12 +2,15 @@ import axios from "axios";
 import { useRef } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { BASE_URL } from "../lib/config";
+import { toast } from 'react-toastify';
+
 
 
 const Register = () => {
   const nameRef = useRef(null);
   const emailRef = useRef(null);
   const passRef = useRef(null);
+  const registerNotify = () => toast("User Registered Successfully!");
 
   const navigate = useNavigate();
 
@@ -25,6 +28,7 @@ const Register = () => {
     try {
     const response = await axios.post(`${BASE_URL}/auth/register`, data);
     console.log("Registered successfully!", response.data.data);
+    registerNotify();
     navigate("/login");
     } catch(error) {
       console.log(error.message);

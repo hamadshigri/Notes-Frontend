@@ -12,6 +12,7 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         const email = emailRef.current.value;
         const password = passRef.current.value;
 
@@ -25,6 +26,7 @@ const Login = () => {
             console.log(savedToken);
             navigate("/dashboard");
         } catch (error) {
+            alert("Please enter valid email or password");
             console.log(error.message);
         }
     }

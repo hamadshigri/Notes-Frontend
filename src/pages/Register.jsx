@@ -42,7 +42,7 @@ const Register = () => {
         <input type="email" ref={emailRef} placeholder="Type Your Email" className="bg-[#F7F7F7] p-4" required />
         <input type="password" ref={passRef} placeholder="Type Your Password" className="bg-[#F7F7F7] p-4" required/>
         <button type="submit" className='bg-[#437993] p-4 text-white font-bold rounded w-full hover:opacity-[0.9] cursor-pointer'>Register</button>
-        <Link to="/login"><p className="text-center">Already have an Account?</p></Link>
+        <p className="text-center">Already have an Account? <Link to="/login" className="text-[#437993] font-bold">Login</Link></p>
       </form>
     </div>
   )

@@ -1,17 +1,15 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 
 const Header = () => {
-    // const { pathname } = useLocation();
-    const navigate = useNavigate()
+    const { pathname } = useLocation();
 
     const token = localStorage.getItem("token");
 
 
     const handleLogout = async (e) => {
         localStorage.removeItem("token");
-        console.log("logout successfully");
-        navigate("/login");
+        window.location.href = "/login"; 
     }
 
     return (
@@ -22,7 +20,7 @@ const Header = () => {
                         <h2 className="text-white text-4xl font-bold pt-2">Notes App</h2>
                         <p className="text-white text-base font-light">Take Notes and never forget</p>
                     </div>
-                    {(token) ? (<div className="flex gap-3">
+                    {(pathname === "/dashboard" || pathname === "/note")? (<div className="flex gap-3">
                         <button onClick={handleLogout} className='bg-white p-4 text-[#437993] font-bold rounded w-[120px] hover:opacity-[0.9] cursor-pointer'>Logout</button></div>) : ""}
                 </div>
 

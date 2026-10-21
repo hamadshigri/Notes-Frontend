@@ -23,7 +23,6 @@ const Login = () => {
         try {
             const response = await axios.post(`${BASE_URL}/auth/login`, data);
             const savedToken = localStorage.setItem("token", response.data.token);
-            console.log(savedToken);
             navigate("/dashboard");
         } catch (error) {
             alert("Please enter valid email or password");

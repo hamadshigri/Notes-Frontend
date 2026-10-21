@@ -132,7 +132,6 @@ const ManageNotes = () => {
           'Accept': 'application/json'
         }
       });
-      console.log(response);
       Swal.fire({
         title: "Deleted!",
         text: "Your item has been successfully removed.",

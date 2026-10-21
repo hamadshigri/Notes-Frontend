@@ -43,7 +43,6 @@ const Dashboard = () => {
 
 
   useEffect(() => {
-    console.log(notes);
     if (searchItem.trim() === "" && selectItem === "sortby") {
           setFilteredNotes(notes);
         }

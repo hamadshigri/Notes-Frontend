@@ -15,10 +15,10 @@ const Dashboard = () => {
   const [notes, setNotes] = useState([]);
   const [filteredNotes, setFilteredNotes] = useState([]);
   const [loading, setLoading] = useState(true);
-  
-  
+
+
   const token = localStorage.getItem("token");
-  if(!token) {
+  if (!token) {
     navigate("/login");
   }
 
@@ -26,10 +26,11 @@ const Dashboard = () => {
     const fetchNotes = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/notes`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json'
-        }});
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json'
+          }
+        });
         const fetchNotes = response.data.data;
         setNotes(fetchNotes);
         setFilteredNotes(fetchNotes);
@@ -44,8 +45,8 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (searchItem.trim() === "" && selectItem === "sortby") {
-          setFilteredNotes(notes);
-        }
+      setFilteredNotes(notes);
+    }
     setFilteredNotes(notes.filter(note => note.title.toLowerCase().includes(searchItem.toLowerCase())));
 
     if (selectItem == "alphabets") {
@@ -54,8 +55,19 @@ const Dashboard = () => {
       setFilteredNotes(prev => [...prev].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
     }
     else if (selectItem == "lastedited") {
-      setFilteredNotes(prev => [...prev].sort((a, b) => new Date(b.updatedAt ?? b.createdAt) - new Date(a.updatedAt ?? a.createdAt)));
-    } else {
+      setFilteredNotes(prev => [...prev].sort((a, b) => {
+        const isAEdited = a.updatedAt && a.updatedAt !== a.createdAt;
+        const isBEdited = b.updatedAt && b.updatedAt !== b.createdAt;
+
+        if (!isAEdited && !isBEdited) return 0;
+
+        if (!isAEdited) return 1;
+        if (!isBEdited) return -1;
+
+        return new Date(b.updatedAt) - new Date(a.updatedAt);
+      }));
+    }
+    else {
       setFilteredNotes(prev => prev);
     }
 
@@ -64,8 +76,8 @@ const Dashboard = () => {
   return (
     <>
       <Navbar setSearchItem={setSearchItem} setSelectItem={setSelectItem} />
-      <div className={`relative ${loading ? 'flex flex-col justify-center items-center': ''} h-[calc(100vh-173px)]`}>
-        {loading? <AiOutlineLoading3Quarters className="animate-spin text-center text-4xl"/> : filteredNotes.map((note, index) => (
+      <div className={`relative ${loading ? 'flex flex-col justify-center items-center' : ''} h-[calc(100vh-173px)]`}>
+        {loading ? <AiOutlineLoading3Quarters className="animate-spin text-center text-4xl" /> : filteredNotes.map((note, index) => (
           <Link key={index} to={`/note?id=${note._id}`}><Item title={note.title} message={note.message} createdAt={note.createdAt} /></Link>
         ))}
 
